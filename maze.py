@@ -1,4 +1,5 @@
 import arcade
+import random
 """This program is a simple maze controlled with arrow keys on the keybaord."""
 
 # Constants
@@ -6,10 +7,11 @@ SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 700
 MOVEMENT_SPEED = 2
 SPRITE_SCALING_PLAYER = 1
+SPRITE_SCALING_BOX = 1
 
 # ***** change the player to not a ball****
 class Player:
-    def __init__(self, position_x, position_y, change_x, change_y, radius, color):
+    def __init__(self, position_x, position_y, change_x, change_y, radius, color, ):
 
         self.position_x = position_x
         self.position_y = position_y
@@ -18,16 +20,49 @@ class Player:
         self.radius = radius
         self.color = color
 
-        # lLists for player, keys, walls
+        # Attributes to store where our ball is
+        
 
+        # self.ball = arcade.draw_circle_filled(self.ball_x, self.ball_y, 15, arcade.color.BANANA_YELLOW)
+        # lLists for player, keys, walls
+        # self.player_list = None
+        # self.wall_list = None
     
+        # # Set up the player
+        # self.player_sprite = None
+
+    # def setup():
+
+    # def horizontal_wall( xAxis, yAxis, wdth, hght):
+    #     """Build a  horizontal wall"""
+    #     arcade.draw_rect_filled(arcade.XYWH(xAxis, yAxis, wdth, hght), arcade.csscolor.FIREBRICK)
+
+    # def walls(horizontal_wall):
+    #     horizontal_wall(0, 320, 200, 10)
+    #     horizontal_wall(350, 320, 200, 10)
+
+
     def draw(self):
+
+         # Sprite lists
+        self.player_list = arcade.SpriteList()
+        self.wall_list = arcade.SpriteList()
+        # print(self.wall_list[0,0])
+
+        # Reset the score
+        self.score = 0
+
         """ Draw the player """
         # *** change this to the player icon ***
-        arcade.draw_circle_filled(self.position_x,
+        self.player_sprite = arcade.draw_circle_filled(self.position_x,
                                   self.position_y,
                                   self.radius, self.
                                   color)
+        # self.player_sprite = arcade.Sprite("images/ladybug.png", SPRITE_SCALING_PLAYER)
+
+        # self.ball_sprite = arcade.draw_circle_filled(self.ball_x, self.ball_y, 15, arcade.color.BANANA_YELLOW)
+        
+        # self.ball = Player(50, 50, 3, 3, 15, arcade.color.AUBURN)
             
     def on_update(self):
         """ Move the player """
@@ -47,14 +82,79 @@ class Player:
         if self.position_y > SCREEN_HEIGHT - self.radius:
             self.position_y = SCREEN_HEIGHT - self.radius + 5
 
+        # when ball hits the edge
+
+        # self.ball_x += self.change_x 
+        # self.ball_y += self.change_y
+
+        # if self.ball_x < self.radius:
+        #     self.ball_x = self.radius 
+
+        # if self.ball_x > SCREEN_WIDTH - self.radius:
+        #     self.ball_x = SCREEN_WIDTH - self.radius 
+
+        # if self.ball_y < self.radius:
+        #     self.ball_y = self.radius 
+
+        # if self.ball_y > SCREEN_HEIGHT - self.radius:
+        #     self.ball_y = SCREEN_HEIGHT - self.radius 
+
+
+class Ball:
+    def __init__(self, ball_x, ball_y, change_ball_x, change_ball_y, radius, color, ):
+
+        self.ball_x = ball_x
+        self.ball_y = ball_y
+        self.change_ball_x = change_ball_x
+        self.change_ball_y = change_ball_y
+        self.radius = radius
+        self.color = color
+
+    def draw(self):
+
+         # Sprite lists
+        self.ball_list = arcade.SpriteList()
+
+        """ Draw the ball """
+
+        self.ball_sprite = arcade.draw_circle_filled(self.ball_x, self.ball_y, self.radius, self.color)
+
+
+            
+    def on_update(self):
+        """ Move the ball """
+
+        # when ball hits the edge
+
+        self.ball_x += self.change_ball_x 
+        self.ball_y += self.change_ball_y
+
+        if self.ball_x < self.radius:
+            self.change_ball_x *= -1
+
+        if self.ball_x > SCREEN_WIDTH - self.radius:
+            self.change_ball_x *= -1
+
+        if self.ball_y < self.radius:
+            self.change_ball_y *= -1
+
+        if self.ball_y > SCREEN_HEIGHT - self.radius:
+            self.change_ball_y *= -1
+        
+# repeat for other walls
 # player can't pass through the wall. 
         # if self.position_y == wall - self.radious:
         #     self.change_y = wall - self.radious + 3
 
-# class Walls:
-#     """ Creates the walls """
+class Walls:
+    """ Creates the walls """
+def horizontal_wall( xAxis, yAxis, wdth, hght):
+    """Build a  horizontal wall"""
+    arcade.draw_rect_filled(arcade.XYWH(xAxis, yAxis, wdth, hght), arcade.csscolor.FIREBRICK)
 
-
+def walls():
+        horizontal_wall(0, 320, 200, 10)
+        horizontal_wall(350, 320, 200, 10)
 
 class MazeGame(arcade.Window):
     """ Window the game is displayed and played in."""
@@ -71,15 +171,31 @@ class MazeGame(arcade.Window):
         # *** change player to not  a ball ***
         # ************************************
         self.player = Player(50, 50, 0, 0, 15, arcade.color.AUBURN)
+        self.ball = Ball(400, 320, 3, 4, 15, arcade.color.AIR_SUPERIORITY_BLUE)
+        
+        # # Attributes to store where our ball is
+        # self.ball_x = 50
+        # self.ball_y = 50
+
 
     def on_draw(self):
         """ Called whenever we need to draw the window. """
         self.clear()
         self.player.draw()
+        self.ball.draw()
         
+        walls()
+        # arcade.draw_circle_filled(self.ball_x, self.ball_y, 15, arcade.color.BANANA_YELLOW)
 
     def on_update(self, delta_time):
         self.player.on_update()
+        self.ball.on_update()
+
+        # wall_collision = arcade.check_for_collision(walls, 
+        # self.player)
+
+        # for walls in wall_collision:
+        #     print("ouch")
 
     def on_key_press(self, key, modifiers):
         """ Called whenever the user presses a key. """
@@ -101,7 +217,6 @@ class MazeGame(arcade.Window):
 
 def main():
     window = MazeGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Castle Maze")
-    
     arcade.run()
 
 if __name__== "__main__":
