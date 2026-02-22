@@ -160,32 +160,42 @@ class MazeGame(arcade.Window):
     """ Window the game is displayed and played in."""
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, title):
         """ Constructor """
-
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, title)
-
-        # background color
-        arcade.set_background_color(arcade.color.SILVER_CHALICE)
-
-        # create player
-        # ************************************
-        # *** change player to not  a ball ***
-        # ************************************
-        self.player = Player(50, 50, 0, 0, 15, arcade.color.AUBURN)
-        self.ball = Ball(400, 320, 3, 4, 15, arcade.color.AIR_SUPERIORITY_BLUE)
         
-        # # Attributes to store where our ball is
-        # self.ball_x = 50
-        # self.ball_y = 50
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, title)
+        arcade.set_background_color(arcade.color.BLANCHED_ALMOND) 
+        # self.background = None
 
+        self.player = Player(50, 50, 0, 0, 15, arcade.color.AUBURN)
+        self.ball = Ball(400, 320, 3, 4, 15, arcade.color.BLEU_DE_FRANCE)
+       
+        
+    def setup(self):
+        # load background image       
+        try:
+            self.background = arcade.load_texture("images/background.png")
+        except Exception as e:
+            print("Could not load background:", e)
+            self.background = None  # fallback
+        # self.background = arcade.load_texture( "images/background.png")
+        
 
     def on_draw(self):
         """ Called whenever we need to draw the window. """
         self.clear()
+        # if self.background:
+        #     arcade.draw_texture_rect(
+        #         center_x=SCREEN_WIDTH / 2,
+        #         center_y=SCREEN_HEIGHT / 2,
+        #         width=SCREEN_WIDTH,
+        #         height=SCREEN_HEIGHT,
+        #         texture=self.background
+        #     )
+
         self.player.draw()
         self.ball.draw()
-        
+                
+
         walls()
-        # arcade.draw_circle_filled(self.ball_x, self.ball_y, 15, arcade.color.BANANA_YELLOW)
 
     def on_update(self, delta_time):
         self.player.on_update()
@@ -217,6 +227,7 @@ class MazeGame(arcade.Window):
 
 def main():
     window = MazeGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Castle Maze")
+    window.setup()
     arcade.run()
 
 if __name__== "__main__":
